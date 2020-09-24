@@ -1,8 +1,8 @@
-# Typescript Node Boilerplate
+# Azure Test Binder
 
-**Builds**:
+An Azure Devops pipeline task to associate test method names to work items.
 
-- `Master` - ![Build Status - Master](https://github.com/jimador/typescript-node-boilerplate/workflows/build/badge.svg?branch=master)
+![Build Status](https://github.com/jamesdunnam-sf/azure-test-binder/workflows/build/badge.svg?branch=master)
 
 ---
 
@@ -35,13 +35,6 @@ Contents:
 - `test` - run tests,
 - `test:watch` - interactive watch mode to automatically re-run tests
 
-# Enhancements
-
-Creating branches with different Typescript projects
-
-- ts-monorepo
-- ts-monorepo-serverless
-- others...
 
 [typescript]: https://www.typescriptlang.org/
 [typescript-4-0]: https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-0.html
