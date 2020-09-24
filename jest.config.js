@@ -11,6 +11,7 @@ module.exports = {
     '^.+\\.(ts|js|html)$': 'ts-jest',
   },
   moduleFileExtensions: ['ts', 'js', 'html', 'json'],
+  setupFiles: ['./test/setup.ts'],
   globals: {
     'ts-jest': {
       tsConfig: '<rootDir>/tsconfig.spec.json',
