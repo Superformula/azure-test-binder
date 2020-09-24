@@ -22,14 +22,13 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged",
+      "pre-commit": "yarn format && lint-staged",
       "prepare-commit-msg": "exec < /dev/tty && git cz --hook || true",
       "pre-push": "yarn checkcommit && pretty-quick --check"
     }
   },
   "lint-staged": {
     "*.{ts,js,md,yaml,yml,json,sh}": [
-      "yarn format",
       "git add"
     ]
   },
