@@ -1,31 +1,13 @@
-import { Delays, greeter } from './main';
+import { initContainer } from './inversify.config'
+import { TYPES } from './types/types'
+import { WorkItemService } from './workitem/WorkItemService'
 
-describe('greeter function', () => {
-  // Read more about fake timers
-  // http://facebook.github.io/jest/docs/en/timer-mocks.html#content
-  jest.useFakeTimers();
+describe('integ test', function () {
+  it('should test', async () => {
+    const container = await initContainer()
+    const svc = container.get<WorkItemService>(TYPES.WorkItemService)
+    const testMethods = await svc.linkTestMethods(36424)
 
-  const name = 'John';
-  let hello: string;
-
-  // Act before assertions
-  beforeAll(async () => {
-    const p: Promise<string> = greeter(name);
-    jest.runOnlyPendingTimers();
-    hello = await p;
-  });
-
-  // Assert if setTimeout was called properly
-  it('delays the greeting by 2 seconds', () => {
-    expect(setTimeout).toHaveBeenCalledTimes(1);
-    expect(setTimeout).toHaveBeenLastCalledWith(
-      expect.any(Function),
-      Delays.Long,
-    );
-  });
-
-  // Assert greeter result
-  it('greets a user with `Hello, {name}` message', () => {
-    expect(hello).toBe(`Hello, ${name}`);
-  });
-});
+    expect(testMethods).toBe('hello')
+  })
+})
