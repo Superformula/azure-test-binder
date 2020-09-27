@@ -8,13 +8,6 @@ export const TYPES = {
 
 export type Optional<T> = T | undefined
 
-export type TestMethod = { testName: string; id: string; testCaseReferenceId: string }
-
-export type WorkItemTestAssociation = {
-  unknown: TestMethod[]
-  [workItem: string]: TestMethod[]
-}
-
 export type Env = typeof process.env & {
   ORG_URL: string
   AZURE_PERSONAL_ACCESS_TOKEN: string

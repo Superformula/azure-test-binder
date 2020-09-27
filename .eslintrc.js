@@ -3,7 +3,7 @@ module.exports = {
     'node': true,
     'jest/globals': true,
   },
-  plugins: ['@typescript-eslint', 'jest', 'import', 'unused-imports'],
+  plugins: ['@typescript-eslint', 'jest', 'import', 'unused-imports', 'eslint-plugin-tsdoc'],
   extends: [
     'plugin:@typescript-eslint/recommended',
     'plugin:jest/recommended',
@@ -27,11 +27,13 @@ module.exports = {
   },
   parser: '@typescript-eslint/parser',
   parserOptions: {
+    tsconfigRootDir: __dirname,
     ecmaVersion: 2018,
     sourceType: 'module',
   },
   rules: {
     // Opt-in
+    'tsdoc/syntax': 'warn',
     '@typescript-eslint/no-explicit-any': 'error',
     'unused-imports/no-unused-imports-ts': 'error',
     'object-shorthand': 'error',

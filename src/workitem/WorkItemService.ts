@@ -1,22 +1,14 @@
 import { IBuildApi } from 'azure-devops-node-api/BuildApi'
-import { ShallowTestCaseResult } from 'azure-devops-node-api/interfaces/TestInterfaces'
 import { ITestApi } from 'azure-devops-node-api/TestApi'
 import { IWorkItemTrackingApi } from 'azure-devops-node-api/WorkItemTrackingApi'
 import { inject, injectable } from 'inversify'
 
-import { Env, TestMethod, TYPES, WorkItemTestAssociation } from '../types/types'
-import { partition } from './utils'
+import { Env, TYPES } from '../types/types'
+import { WorkItemTestAssociation } from './types'
+import { partition, toWorkItemUpdates } from './utils'
 
 export interface WorkItemService {
   linkTestMethods(buildId: number): Promise<unknown>
-}
-
-const toTestMethod = ({ automatedTestName, id, refId }: ShallowTestCaseResult): TestMethod => {
-  return {
-    id: `${id}`,
-    testName: automatedTestName,
-    testCaseReferenceId: `${refId}`,
-  }
 }
 
 @injectable()
@@ -45,9 +37,8 @@ export class AdoWorkItemService implements WorkItemService {
   private async getWorkItemTestAssociation(buildId: number): Promise<WorkItemTestAssociation> {
     const project = this.environment.PROJECT
     const testResults = (await this.testService.getTestResultsByBuild(project, buildId)) ?? []
-    const testMethods = testResults.map(toTestMethod)
 
-    return partition(testMethods)
+    return partition(testResults)
   }
 
   private async associateWorkItemsToTests(association: WorkItemTestAssociation): Promise<boolean> {
@@ -58,8 +49,7 @@ export class AdoWorkItemService implements WorkItemService {
 
       if (testMethods.length) {
         try {
-          const testCases = this.createTestCaseAssociates(testMethods)
-          // TODO: Association result actiom
+          const testCases = toWorkItemUpdates(testMethods)
           await this.workItemService.updateWorkItem({}, testCases, Number(workItem))
         } catch (e) {
           if (AdoWorkItemService.noopErrorMessage.test(e.message)) {
@@ -75,20 +65,4 @@ export class AdoWorkItemService implements WorkItemService {
 
     return true
   }
-
-  private createTestCaseAssociates(testMethods: TestMethod[]): unknown[] {
-    return testMethods.map((test) => createPatchValue(test.testCaseReferenceId))
-  }
 }
-
-const createPatchValue = (testRefId: string): unknown => ({
-  op: 'add',
-  path: '/relations/-',
-  value: {
-    rel: 'ArtifactLink',
-    url: `vstfs:///TestManagement/TcmTest/tcm.${testRefId}`,
-    attributes: {
-      name: 'Test',
-    },
-  },
-})

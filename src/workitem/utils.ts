@@ -1,14 +1,17 @@
-import { Optional, TestMethod, WorkItemTestAssociation } from '../types/types'
+import { ShallowTestCaseResult } from 'azure-devops-node-api/interfaces/TestInterfaces'
+
+import { Optional } from '../types/types'
+import { WorkItemTestAssociation, WorkItemUpdate } from './types'
 
 const defaultWorkItemIdPattern = /(#?\d{5})/g
 
 /**
- * Extract a work item id from a string.
- * {@code
+ * Extract a work item id from a text string.
+ * ```ts
  *  const aStringWithAWorkItemId = 'I have a work item id #12345'
  *  const id = extractWorkItemId(aStringWithAWorkItemId) // id === 12345
- * }
- * @param text string text to search
+ * ```
+ * @param text - `string` text to search
  */
 export const extractWorkItemId = (text: string): Optional<string> => {
   const strings = text.match(defaultWorkItemIdPattern) ?? []
@@ -19,13 +22,14 @@ export const extractWorkItemId = (text: string): Optional<string> => {
 }
 
 /**
- * Partition an array of TestMethod into a WorkItemTestAssociation
- * @param testMethods TestMethod array to partition.
+ * Partition an array of {@link ShallowTestCaseResult} into a {@link WorkItemTestAssociation}
+ *
+ * @param testResults - {@link ShallowTestCaseResult} array to partition.
  */
-export const partition = (testMethods: TestMethod[]): WorkItemTestAssociation => {
-  return testMethods.reduce<WorkItemTestAssociation>(
+export const partition = (testResults: ShallowTestCaseResult[]): WorkItemTestAssociation => {
+  return testResults.reduce<WorkItemTestAssociation>(
     (workItemAssoc, testResult) => {
-      const workItemId = extractWorkItemId(testResult.testName)
+      const workItemId = extractWorkItemId(testResult.automatedTestName)
 
       if (workItemId) {
         const prev = workItemAssoc[workItemId]
@@ -40,3 +44,26 @@ export const partition = (testMethods: TestMethod[]): WorkItemTestAssociation =>
     { unknown: [] },
   )
 }
+
+/**
+ * Create a {@link WorkItemUpdate} for a test reference id
+ * @param testRefId - `number` test reference id
+ */
+export const toWorkItemUpdate = (testRefId: number): WorkItemUpdate => ({
+  op: 'add',
+  path: '/relations/-',
+  value: {
+    rel: 'ArtifactLink',
+    url: `vstfs:///TestManagement/TcmTest/tcm.${testRefId}`,
+    attributes: {
+      name: 'Test',
+    },
+  },
+})
+
+/**
+ * Transform an array of {@link ShallowTestCaseResult} to an array of {@link WorkItemUpdate}
+ * @param testCaseResults - the {@link ShallowTestCaseResult} array to transform
+ */
+export const toWorkItemUpdates = (testCaseResults: ShallowTestCaseResult[]): WorkItemUpdate[] =>
+  testCaseResults.map((test) => toWorkItemUpdate(test.refId))

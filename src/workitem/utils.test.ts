@@ -1,4 +1,7 @@
-import { extractWorkItemId } from './utils'
+import { shallowTestCaseResultFactory } from '../../test/ado-fakes'
+import { extractWorkItemId, toWorkItemUpdate, toWorkItemUpdates } from './utils'
+
+
 
 describe('extractWorkItemId tests', function () {
   describe.each`
@@ -30,6 +33,38 @@ describe('extractWorkItemId tests', function () {
     it('should return undefined', () => {
       const id = extractWorkItemId(text)
       expect(id).toBeUndefined()
+    })
+  })
+
+
+  describe('toWorkItemUpdate tests', function () {
+    it.each`
+    testRefId
+    ${0}
+    ${1}
+    ${1000}
+    ${-1}
+    ${-1000}
+  `('should create WorkItemUpdate objects for: $testRefId', function ({ testRefId }) {
+      const expectedUrl = `vstfs:///TestManagement/TcmTest/tcm.${testRefId}`
+      const workItemUpdate = toWorkItemUpdate(testRefId)
+      expect(workItemUpdate).toBeDefined()
+      expect(workItemUpdate.value.url).toStrictEqual(expectedUrl)
+    })
+  })
+
+  describe('toWorkItemUpdates tests', function () {
+    it('should return empty for empty array', function () {
+      const workItemUpdates = toWorkItemUpdates([])
+      expect(workItemUpdates).toStrictEqual([])
+    })
+
+    it('should return non-empty for non-empty array', function () {
+      const testRef = shallowTestCaseResultFactory.build()
+      const expectedUrl = `vstfs:///TestManagement/TcmTest/tcm.${testRef.refId}`
+      const workItemUpdates = toWorkItemUpdates([testRef])
+      expect(workItemUpdates.length).toStrictEqual(1)
+      expect(workItemUpdates[0].value.url).toStrictEqual(expectedUrl)
     })
   })
 })
