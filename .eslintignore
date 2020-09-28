@@ -5,10 +5,11 @@
 
 # testing
 /coverage
+/test
 *.test.ts
 
 # output
-/build
+/task
 
 # misc
 **/*.log

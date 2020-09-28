@@ -6,9 +6,10 @@
 # testing
 /coverage
 *.test.ts
+/test
 
 # output
-/build
+/task
 
 # misc
 **/*.log
