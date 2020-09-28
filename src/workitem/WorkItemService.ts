@@ -1,0 +1,102 @@
+import { ITestApi } from 'azure-devops-node-api/TestApi'
+import { IWorkItemTrackingApi } from 'azure-devops-node-api/WorkItemTrackingApi'
+import { inject, injectable } from 'inversify'
+
+import { Env, TYPES } from '../types/types'
+import { TestMethodInfo, WorkItemTestAssociationInfo, WorkItemTestDto, WorkItemUpdateResults } from './types'
+import { partition, toTestMethod, toWorkItemTestAssociationDto, toWorkItemUpdates } from './utils'
+
+export interface WorkItemService {
+  linkTestMethods(buildId: number): Promise<unknown>
+}
+
+@injectable()
+export class AdoWorkItemService implements WorkItemService {
+  private static noopErrorMessage = /Relation already exists/gi
+
+  constructor(
+    @inject(TYPES.AzureWorkItemService) private readonly workItemService: IWorkItemTrackingApi,
+    @inject(TYPES.AzureTestRunService) private readonly testService: ITestApi,
+    @inject(TYPES.Env) private readonly environment: Env,
+  ) {}
+
+  /**
+   *
+   * @param buildId - `number` build id
+   */
+  async linkTestMethods(buildId: number): Promise<unknown> {
+    const association = await this.getWorkItemTestAssociation(buildId)
+    const result = await this.associateWorkItemsToTests(association)
+
+    return Promise.resolve(result)
+  }
+
+  /**
+   * Get the `WorkItemTestAssociationInfo` for a given build identifier.
+   * @param buildId - `number` build identifier to use.
+   */
+  private async getWorkItemTestAssociation(buildId: number): Promise<WorkItemTestAssociationInfo> {
+    const project = this.environment.PROJECT
+    const testResults = (await this.testService.getTestResultsByBuild(project, buildId)) ?? []
+    const testMethods = testResults.map(toTestMethod)
+
+    return partition(testMethods)
+  }
+
+  /**
+   * Associate test methods with known work items.
+   *
+   * @param unknownWorkItem - The array of test methods without a known work item.
+   * @param workItemAssociations - Object containing `{ workItemId: number; testMethods: TestMethodInfo[]; }`
+   */
+  private async associateWorkItemsToTests({
+    unknownWorkItem,
+    ...workItemAssociations
+  }: WorkItemTestAssociationInfo): Promise<WorkItemUpdateResults> {
+    const workItemIds = Object.keys(workItemAssociations)
+      .map((key) => parseInt(key))
+      .filter((num) => !isNaN(num))
+
+    const successBucket: WorkItemTestDto[] = []
+
+    for (const workItem of workItemIds) {
+      const testMethods = workItemAssociations[workItem]
+      const dtos = await this.handleValidWorkItem(workItem, testMethods)
+      successBucket.concat(dtos)
+    }
+
+    return {
+      success: successBucket,
+      unknownWorkItem,
+    }
+  }
+
+  /**
+   * Attempt to associate a collection of {@link TestMethodInfo} with a given work item identifier.
+   *
+   * @param workItemId - `number` the work item identifier
+   * @param testMethods - `TestMethodInfo[]` The test methods to associate with the work item.
+   */
+  private async handleValidWorkItem(workItemId: number, testMethods: TestMethodInfo[]): Promise<WorkItemTestDto[]> {
+    if (!testMethods.length) {
+      throw new Error(`O_o No test methods for work item: ${workItemId}!`)
+    }
+
+    const workItemTestAssociationDtos = testMethods.map((m) => toWorkItemTestAssociationDto(workItemId, m))
+
+    try {
+      const testCases = toWorkItemUpdates(testMethods)
+      await this.workItemService.updateWorkItem({}, testCases, workItemId)
+
+      return workItemTestAssociationDtos
+    } catch (O_o) {
+      if (AdoWorkItemService.noopErrorMessage.test(O_o.message)) {
+        console.warn(O_o.message)
+
+        return workItemTestAssociationDtos
+      }
+
+      throw O_o
+    }
+  }
+}

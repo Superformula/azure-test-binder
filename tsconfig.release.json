@@ -4,5 +4,6 @@
     "rootDir": ".",
     "outDir": "build",
     "removeComments": true
-  }
+  },
+  "exclude": ["*/*.test.ts", "**/node_modules"]
 }

@@ -1,4 +1,4 @@
-const TEST_REGEX = '(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|js?|tsx?|ts?)$';
+const TEST_REGEX = '(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|js?|tsx?|ts?)$'
 
 module.exports = {
   collectCoverage: true,
@@ -11,6 +11,7 @@ module.exports = {
     '^.+\\.(ts|js|html)$': 'ts-jest',
   },
   moduleFileExtensions: ['ts', 'js', 'html', 'json'],
+  setupFiles: ['./test/setup.js'],
   globals: {
     'ts-jest': {
       tsConfig: '<rootDir>/tsconfig.spec.json',
@@ -19,4 +20,4 @@ module.exports = {
       },
     },
   },
-};
+}
