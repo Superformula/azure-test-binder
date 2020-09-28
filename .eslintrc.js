@@ -34,7 +34,6 @@ module.exports = {
   rules: {
     // Opt-in
     'tsdoc/syntax': 'warn',
-    '@typescript-eslint/no-explicit-any': 'error',
     'unused-imports/no-unused-imports-ts': 'error',
     'object-shorthand': 'error',
 
@@ -42,6 +41,7 @@ module.exports = {
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/no-empty-function': 'off',
     '@typescript-eslint/no-var-requires': 'off',
+    '@typescript-eslint/no-explicit-any': 'off',
 
     // Configure
     'import/no-extraneous-dependencies': [

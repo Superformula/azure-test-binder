@@ -1,12 +1,42 @@
-import { ShallowTestCaseResult } from 'azure-devops-node-api/interfaces/TestInterfaces'
+/**
+ * DTO containing test method info
+ */
+export type TestMethodInfo = {
+  name: string
+  refId: number
+  id: number
+}
 
 /**
- * Named tuple containing {@link ShallowTestCaseResult} for any known or and unknown work item ids.
+ * Named tuple for bucketizing {@link TestMethodInfo} for any known or and unknown work item ids.
  */
-export type WorkItemTestAssociation = {
-  unknown: ShallowTestCaseResult[]
-  [workItemId: number]: ShallowTestCaseResult[]
+export type WorkItemTestAssociationInfo = {
+  unknownWorkItem: TestMethodInfo[]
+  [workItemId: number]: TestMethodInfo[]
 }
+
+/**
+ * DTO with work item and test data.
+ */
+export type WorkItemTestDto = {
+  workItemId: number
+  testId: number
+  testRefId: number
+  testName: string
+}
+
+/**
+ * Results of running the association call.
+ */
+export type WorkItemUpdateResults = {
+  success: WorkItemTestDto[]
+  unknownWorkItem: TestMethodInfo[]
+}
+
+/**
+ * Union of all work item association status values
+ */
+export type WorkItemAssociationStatus = keyof WorkItemUpdateResults
 
 /**
  * Operation, path, and UpdateValue for updating a work item.
@@ -21,7 +51,7 @@ export type WorkItemUpdate = {
  * The value for the {@link WorkItemUpdate}
  */
 export type UpdateValue = {
-  rel: LinkType
+  rel: RelationType
   url: string
   attributes: {
     name: string
@@ -39,26 +69,11 @@ export const operations = ['add'] as const
 export type Operation = typeof operations[number]
 
 /**
- * Guard function for Operation.
- *
- * @param maybeOp - string to test
+ * All relation type values
  */
-export const operationGuard = (maybeOp: string): maybeOp is Operation => operations.includes(maybeOp as Operation)
+export const relationTypes = ['ArtifactLink'] as const
 
 /**
- * All link type values
+ * Union of all relation type values
  */
-export const linkTypes = ['ArtifactLink'] as const
-
-/**
- * Union of all link type values
- */
-export type LinkType = typeof linkTypes[number]
-
-/**
- * Guard function for link types
- *
- * @param maybeLinkType - string ot test
- */
-export const linkTypeGuard = (maybeLinkType: string): maybeLinkType is LinkType =>
-  linkTypes.includes(maybeLinkType as LinkType)
+export type RelationType = typeof relationTypes[number]

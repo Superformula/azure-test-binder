@@ -1,8 +1,6 @@
 import { shallowTestCaseResultFactory } from '../../test/ado-fakes'
 import { extractWorkItemId, toWorkItemUpdate, toWorkItemUpdates } from './utils'
 
-
-
 describe('extractWorkItemId tests', function () {
   describe.each`
     text
@@ -36,16 +34,15 @@ describe('extractWorkItemId tests', function () {
     })
   })
 
-
   describe('toWorkItemUpdate tests', function () {
     it.each`
-    testRefId
-    ${0}
-    ${1}
-    ${1000}
-    ${-1}
-    ${-1000}
-  `('should create WorkItemUpdate objects for: $testRefId', function ({ testRefId }) {
+      testRefId
+      ${0}
+      ${1}
+      ${1000}
+      ${-1}
+      ${-1000}
+    `('should create WorkItemUpdate objects for: $testRefId', function ({ testRefId }) {
       const expectedUrl = `vstfs:///TestManagement/TcmTest/tcm.${testRefId}`
       const workItemUpdate = toWorkItemUpdate(testRefId)
       expect(workItemUpdate).toBeDefined()
