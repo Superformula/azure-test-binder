@@ -1,8 +1,7 @@
 export const TYPES = {
-  AzureBuildService: Symbol.for('AzureBuildService'),
   AzureWorkItemService: Symbol.for('AzureWorkItemService'),
   AzureTestRunService: Symbol.for('AzureTestRunService'),
-  WorkItemService: Symbol.for('AzureSearchService'),
+  WorkItemAssociationService: Symbol.for('WorkItemAssociationService'),
   Env: Symbol.for('Env'),
 }
 

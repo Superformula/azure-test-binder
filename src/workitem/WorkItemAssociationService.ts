@@ -4,14 +4,14 @@ import { inject, injectable } from 'inversify'
 
 import { Env, TYPES } from '../types/types'
 import { TestMethodInfo, WorkItemTestAssociationInfo, WorkItemTestDto, WorkItemUpdateResults } from './types'
-import { partition, toTestMethod, toWorkItemTestAssociationDto, toWorkItemUpdates } from './utils'
+import { partition, toTestMethodInfo, toWorkItemTestDto, toWorkItemUpdates } from './utils'
 
-export interface WorkItemService {
-  linkTestMethods(buildId: number): Promise<unknown>
+export interface WorkItemAssociationService {
+  linkTestMethods(buildId: number): Promise<WorkItemUpdateResults>
 }
 
 @injectable()
-export class AdoWorkItemService implements WorkItemService {
+export class DefaultWorkItemAssociationService implements WorkItemAssociationService {
   private static noopErrorMessage = /Relation already exists/gi
 
   constructor(
@@ -24,7 +24,7 @@ export class AdoWorkItemService implements WorkItemService {
    *
    * @param buildId - `number` build id
    */
-  async linkTestMethods(buildId: number): Promise<unknown> {
+  async linkTestMethods(buildId: number): Promise<WorkItemUpdateResults> {
     const association = await this.getWorkItemTestAssociation(buildId)
     const result = await this.associateWorkItemsToTests(association)
 
@@ -38,7 +38,7 @@ export class AdoWorkItemService implements WorkItemService {
   private async getWorkItemTestAssociation(buildId: number): Promise<WorkItemTestAssociationInfo> {
     const project = this.environment.PROJECT
     const testResults = (await this.testService.getTestResultsByBuild(project, buildId)) ?? []
-    const testMethods = testResults.map(toTestMethod)
+    const testMethods = testResults.map(toTestMethodInfo)
 
     return partition(testMethods)
   }
@@ -62,7 +62,7 @@ export class AdoWorkItemService implements WorkItemService {
     for (const workItem of workItemIds) {
       const testMethods = workItemAssociations[workItem]
       const dtos = await this.handleValidWorkItem(workItem, testMethods)
-      successBucket.concat(dtos)
+      successBucket.push(...dtos)
     }
 
     return {
@@ -82,7 +82,7 @@ export class AdoWorkItemService implements WorkItemService {
       throw new Error(`O_o No test methods for work item: ${workItemId}!`)
     }
 
-    const workItemTestAssociationDtos = testMethods.map((m) => toWorkItemTestAssociationDto(workItemId, m))
+    const workItemTestAssociationDtos = testMethods.map((m) => toWorkItemTestDto(workItemId, m))
 
     try {
       const testCases = toWorkItemUpdates(testMethods)
@@ -90,7 +90,7 @@ export class AdoWorkItemService implements WorkItemService {
 
       return workItemTestAssociationDtos
     } catch (O_o) {
-      if (AdoWorkItemService.noopErrorMessage.test(O_o.message)) {
+      if (DefaultWorkItemAssociationService.noopErrorMessage.test(O_o.message)) {
         console.warn(O_o.message)
 
         return workItemTestAssociationDtos
