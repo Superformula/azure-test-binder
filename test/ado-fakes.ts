@@ -10,7 +10,7 @@ export const shallowTestCaseResultFactory = f.Sync.makeFactory<ShallowTestCaseRe
 })
 
 export const testMethodInfoFactory = f.Sync.makeFactory<TestMethodInfo>({
-  id: faker.random.number({min: 100, max: 200}),
+  id: faker.random.number({ min: 100, max: 200 }),
   name: faker.company.catchPhrase(),
-  refId: faker.random.number({min: 1000, max: 2000})
+  refId: faker.random.number({ min: 1000, max: 2000 }),
 })
