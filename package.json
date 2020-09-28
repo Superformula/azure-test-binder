@@ -7,6 +7,7 @@
   "scripts": {
     "prebuild": "yarn clean-generated",
     "build": "tsc -p tsconfig.release.json",
+    "build-az-task": "npx tfx extension create --manifest-globs vss-extension.json",
     "prebuild:ci": "run-s clean",
     "build:ci": "tsc -p tsconfig.release.json",
     "postbuild:ci": "cp package.json task/ && cp -r node_modules/ task/node_modules && cp task.json task/",
