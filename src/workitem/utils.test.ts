@@ -1,5 +1,6 @@
-import { shallowTestCaseResultFactory } from '../../test/ado-fakes'
-import { extractWorkItemId, toWorkItemUpdate, toWorkItemUpdates } from './utils'
+import { shallowTestCaseResultFactory, testMethodInfoFactory } from '../../test/ado-fakes'
+import { extractWorkItemId, toTestMethodInfo, toWorkItemTestDto, toWorkItemUpdate, toWorkItemUpdates } from './utils'
+import { ShallowTestCaseResult } from 'azure-devops-node-api/interfaces/TestInterfaces'
 
 describe('extractWorkItemId tests', function () {
   describe.each`
@@ -62,6 +63,28 @@ describe('extractWorkItemId tests', function () {
       const workItemUpdates = toWorkItemUpdates([testRef])
       expect(workItemUpdates.length).toStrictEqual(1)
       expect(workItemUpdates[0].value.url).toStrictEqual(expectedUrl)
+    })
+  })
+
+  describe('toTestMethod tests', function() {
+    it('should convert', function() {
+      const testCaseResult = shallowTestCaseResultFactory.build()
+      const {refId, id, name} = toTestMethodInfo(testCaseResult)
+      expect(refId).toStrictEqual(testCaseResult.refId)
+      expect(name).toStrictEqual(testCaseResult.automatedTestName)
+      expect(id).toStrictEqual(testCaseResult.id)
+    })
+  })
+
+  describe('toWorkItemTestAssociationDto test', function() {
+    it('should construct a work item test association dto', function() {
+      const testMethod = testMethodInfoFactory.build()
+      const id = 12345
+      const { testId, testName, testRefId, workItemId } = toWorkItemTestDto(id, testMethod)
+      expect(testId).toStrictEqual(testMethod.id)
+      expect(testName).toStrictEqual(testMethod.name)
+      expect(testRefId).toStrictEqual(testMethod.refId)
+      expect(workItemId).toStrictEqual(id)
     })
   })
 })

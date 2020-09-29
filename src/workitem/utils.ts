@@ -76,7 +76,7 @@ export const toWorkItemUpdates = (testCaseResults: ShallowTestCaseResult[]): Wor
  * @param id - `string` {@link ShallowTestCaseResult.id | id} alias
  * @param refId - `string` {@link ShallowTestCaseResult.refId | refId} alias
  */
-export const toTestMethod = ({ automatedTestName: name, id, refId }: ShallowTestCaseResult): TestMethodInfo => ({
+export const toTestMethodInfo = ({ automatedTestName: name, id, refId }: ShallowTestCaseResult): TestMethodInfo => ({
   id,
   name,
   refId,
@@ -90,7 +90,7 @@ export const toTestMethod = ({ automatedTestName: name, id, refId }: ShallowTest
  * @param testRefId - `number` {@link TestMethodInfo.refId | refId} alias
  * @param testName - `string` {@link TestMethodInfo.name | name} alias
  */
-export const toWorkItemTestAssociationDto = (
+export const toWorkItemTestDto = (
   workItemId: number,
   { id: testId, refId: testRefId, name: testName }: TestMethodInfo,
 ): WorkItemTestDto => ({

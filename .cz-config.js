@@ -14,11 +14,9 @@ module.exports = {
   ],
   scopes: [
     { name: 'docs', description: 'anything related to docs' },
-    { name: 'infrastructure', description: 'anything infrastructure specific' },
-    { name: 'be', description: 'anything backend specific' },
-    { name: 'fe', description: 'anything frontend specific' },
+    { name: 'api', description: 'anything related to api' },
+    { name: 'code', description: 'anything related to code' },
     { name: 'linter', description: 'anything Linter specific' },
-    { name: 'storybook', description: 'anything Storybook specific' },
     {
       name: 'testing',
       description: 'anything testing specific (e.g., jest or cypress)',

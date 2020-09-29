@@ -1,9 +1,9 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "rootDir": ".",
-    "outDir": "build",
-    "removeComments": true
+    "sourceRoot": "src",
+    "rootDir": "src",
+    "outDir": "task"
   },
-  "exclude": ["*/*.test.ts", "**/node_modules"]
+  "exclude": ["**/*.test.ts", "**/node_modules"]
 }

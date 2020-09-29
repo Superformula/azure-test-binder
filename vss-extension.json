@@ -1,0 +1,32 @@
+{
+  "manifestVersion": 1,
+  "id": "azure-test-binder",
+  "name": "Azure Test Binder",
+  "version": "0.0.1",
+  "publisher": "superformula",
+  "targets": [
+    {
+      "id": "Microsoft.VisualStudio.Services"
+    }
+  ],
+  "description": "Associate test ids to work items",
+  "categories": ["Azure Pipelines"],
+  "icons": {
+    "default": "images/extension-icon.png"
+  },
+  "files": [
+    {
+      "path": "task"
+    }
+  ],
+  "contributions": [
+    {
+      "id": "azure-test-binder-task",
+      "type": "ms.vss-distributed-task.task",
+      "targets": ["ms.vss-distributed-task.tasks"],
+      "properties": {
+        "name": "task"
+      }
+    }
+  ]
+}

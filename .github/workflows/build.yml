@@ -19,3 +19,14 @@ jobs:
       - run: yarn run test
         env:
           CI: true
+  deploy:
+    needs: build
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: volta-cli/action@v1
+      - run: yarn run build:ci
+      - run: yarn run build-az-task
+        env:
+          PRODUCTION: true
