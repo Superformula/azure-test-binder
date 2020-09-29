@@ -9,9 +9,10 @@ testem.log
 /node_modules
 
 # output
-build/
+task/
 coverage/
 junit.xml
+*.vsix
 
 # IDEs and editors
 /.idea
