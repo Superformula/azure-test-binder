@@ -36,11 +36,9 @@ The type must be one of the following:
 The scope must be one of the following:
 
 - docs - anything related to docs
-- infrastructure - anything infrastructure specific
-- be - anything backend specific
-- fe - anything frontend specific
+- code - anything code related
+- api - anything api specific
 - linter - anything Linter specific
-- storybook - anything Storybook specific
 - testing - anything testing specific (e.g., jest or cypress)
 - repo - anything related to managing the repo itself
 - misc - misc items that do not fall in to one of the above scopes
