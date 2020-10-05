@@ -2,8 +2,8 @@
   "manifestVersion": 1,
   "id": "azure-test-binder",
   "name": "Azure Test Binder",
-  "version": "0.0.1",
-  "publisher": "superformula",
+  "version": "0.0.2",
+  "publisher": "Superformula",
   "targets": [
     {
       "id": "Microsoft.VisualStudio.Services"
