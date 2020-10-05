@@ -1,6 +1,6 @@
 {
   "name": "azure-test-binder",
-  "version": "1.0.0",
+  "version": "0.0.2",
   "description": "Associate Azure Devops Work Items To Automated tests",
   "license": "MIT",
   "author": "James Dunnam",
@@ -46,6 +46,7 @@
     "azure-pipelines-task-lib": "^3.0.1-preview",
     "inversify": "^5.0.1",
     "reflect-metadata": "^0.1.13",
+    "tslib": "^2.0.1",
     "uuid": "^8.3.0"
   },
   "devDependencies": {
