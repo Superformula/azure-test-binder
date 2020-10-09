@@ -2,7 +2,7 @@
   "manifestVersion": 1,
   "id": "azure-test-binder",
   "name": "Azure Test Binder",
-  "version": "0.2.1",
+  "version": "0.2.3",
   "publisher": "Superformula",
   "targets": [
     {
