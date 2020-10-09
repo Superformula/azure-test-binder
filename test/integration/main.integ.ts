@@ -1,14 +1,36 @@
-import path = require('path')
+import * as azTask from 'azure-pipelines-task-lib/task'
 
-import { MockTestRunner } from 'azure-pipelines-task-lib/mock-test'
+import { run } from '../../src/index'
+import { TaskRunner } from '../../src/types/types'
 
-describe('a test', function () {
-  it('should test', async function () {
-    const testPath = path.join(__dirname, 'run.ts')
-    const testRunner = new MockTestRunner(testPath)
-    testRunner.run()
-    console.log(testRunner.succeeded)
-    expect(testRunner.succeeded).toStrictEqual(true)
-    expect(testRunner.stdout.indexOf('Hello human') >= 0).toStrictEqual(true)
+describe('integration tests', function () {
+  it('reports stderr correctly', async function () {
+    const mock: TaskRunner = (_buildId, _envOptions) => {
+      return new Promise((resolve, _reject) => {
+        azTask.warning('Some warning')
+        resolve({ unknownWorkItem: [], success: [] })
+      })
+    }
+
+    let hasStdout = false
+    let hasStderr = false
+
+    process.stdout.on('data', () => {
+      hasStdout = true
+    })
+
+    process.stderr.on('data', () => {
+      hasStderr = true
+    })
+
+    await run(mock)
+
+    console.log('hasStdout', hasStdout)
+    console.log('hasStderr', hasStderr)
+    console.log('process.exitCode', process.exitCode)
+
+    expect(hasStdout).toBe(false)
+    expect(hasStderr).toBe(true)
+    expect(process.exitCode).toBe(1)
   })
 })

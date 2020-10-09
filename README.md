@@ -67,6 +67,7 @@ To invoke the task locally, you will need to:
    - `AZURE_PERSONAL_ACCESS_TOKEN` is a valid Personal Access Token ([PAT]).
    - `ORG_URL` is the URL for your organization: e.g. `https://dev.azure.com/cool-co`
    - `PROJECT` is your project name. e.g. `cool-code` from the URL `https://dev.azure.com/cool-co/cool-code` (_not_ the full URL)
+   - `FAIL_ON_STDERR` means any `console.warn`/`console.error` will cause the task to fail. True by default.
 3. Lastly, you need a valid build id to execute against. The build id is an integer value that
    can be found with the [predefined variable] `$(Build.BuildId)`.
 4. Run `yarn build:ci`
