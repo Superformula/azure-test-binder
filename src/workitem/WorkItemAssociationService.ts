@@ -91,7 +91,7 @@ export class DefaultWorkItemAssociationService implements WorkItemAssociationSer
       return workItemTestAssociationDtos
     } catch (O_o) {
       if (DefaultWorkItemAssociationService.noopErrorMessage.test(O_o.message)) {
-        console.warn(O_o.message)
+        console.log('Error for work item ID ' + workItemId + ': ' + O_o.message)
 
         return workItemTestAssociationDtos
       }
