@@ -1,5 +1,6 @@
 import { ITestApi } from 'azure-devops-node-api/TestApi'
 import { IWorkItemTrackingApi } from 'azure-devops-node-api/WorkItemTrackingApi'
+import * as azTask from 'azure-pipelines-task-lib/task'
 import { inject, injectable } from 'inversify'
 
 import { Env, TYPES } from '../types/types'
@@ -78,6 +79,8 @@ export class DefaultWorkItemAssociationService implements WorkItemAssociationSer
    * @param testMethods - `TestMethodInfo[]` The test methods to associate with the work item.
    */
   private async handleValidWorkItem(workItemId: number, testMethods: TestMethodInfo[]): Promise<WorkItemTestDto[]> {
+    azTask.debug('Associating ' + testMethods.length + ' test methods(s) with work item ID ' + workItemId)
+
     if (!testMethods.length) {
       throw new Error(`O_o No test methods for work item: ${workItemId}!`)
     }
@@ -91,7 +94,7 @@ export class DefaultWorkItemAssociationService implements WorkItemAssociationSer
       return workItemTestAssociationDtos
     } catch (O_o) {
       if (DefaultWorkItemAssociationService.noopErrorMessage.test(O_o.message)) {
-        console.log('Error for work item ID ' + workItemId + ': ' + O_o.message)
+        azTask.debug('Error for work item ID ' + workItemId + ': ' + O_o.message)
 
         return workItemTestAssociationDtos
       }

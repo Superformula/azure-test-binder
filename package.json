@@ -15,7 +15,7 @@
     "checkcommit": "node ./scripts/commit-lint.js",
     "clean": "run-p clean-generated clean-logs",
     "clean-deps": "rimraf ./*/**/node_modules ./node_modules ",
-    "clean-generated": "rimraf coverage tmp task *.vsix",
+    "clean-generated": "rimraf coverage tmp task *.vsix junit.xml",
     "clean-logs": "rimraf *.log",
     "commit": "git-cz",
     "format": "./scripts/format.sh && yarn run sort-pj",
