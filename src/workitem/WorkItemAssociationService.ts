@@ -1,5 +1,6 @@
 import { ITestApi } from 'azure-devops-node-api/TestApi'
 import { IWorkItemTrackingApi } from 'azure-devops-node-api/WorkItemTrackingApi'
+import * as azTask from 'azure-pipelines-task-lib/task'
 import { inject, injectable } from 'inversify'
 
 import { Env, TYPES } from '../types/types'
@@ -91,7 +92,7 @@ export class DefaultWorkItemAssociationService implements WorkItemAssociationSer
       return workItemTestAssociationDtos
     } catch (O_o) {
       if (DefaultWorkItemAssociationService.noopErrorMessage.test(O_o.message)) {
-        console.log('Error for work item ID ' + workItemId + ': ' + O_o.message)
+        azTask.debug('Error for work item ID ' + workItemId + ': ' + O_o.message)
 
         return workItemTestAssociationDtos
       }
