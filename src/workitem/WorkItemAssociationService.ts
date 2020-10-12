@@ -79,6 +79,8 @@ export class DefaultWorkItemAssociationService implements WorkItemAssociationSer
    * @param testMethods - `TestMethodInfo[]` The test methods to associate with the work item.
    */
   private async handleValidWorkItem(workItemId: number, testMethods: TestMethodInfo[]): Promise<WorkItemTestDto[]> {
+    azTask.debug('Associating ' + testMethods.length + ' test methods(s) with work item ID ' + workItemId)
+
     if (!testMethods.length) {
       throw new Error(`O_o No test methods for work item: ${workItemId}!`)
     }
