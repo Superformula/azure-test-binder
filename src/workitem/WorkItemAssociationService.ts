@@ -4,8 +4,14 @@ import * as azTask from 'azure-pipelines-task-lib/task'
 import { inject, injectable } from 'inversify'
 
 import { Env, TYPES } from '../types/types'
-import { TestMethodInfo, WorkItemTestAssociationInfo, WorkItemTestDto, WorkItemUpdateResults } from './types'
-import { partition, toTestMethodInfo, toWorkItemTestDto, toWorkItemUpdates } from './utils'
+import {
+  TestMethodInfo,
+  WorkItemTestAssociationInfo,
+  WorkItemTestDto,
+  WorkItemUpdate,
+  WorkItemUpdateResults,
+} from './types'
+import { asyncForEach, isString, partition, toTestMethodInfo, toWorkItemTestDto, toWorkItemUpdates } from './utils'
 
 export interface WorkItemAssociationService {
   linkTestMethods(buildId: number): Promise<WorkItemUpdateResults>
@@ -85,21 +91,37 @@ export class DefaultWorkItemAssociationService implements WorkItemAssociationSer
       throw new Error(`O_o No test methods for work item: ${workItemId}!`)
     }
 
-    const workItemTestAssociationDtos = testMethods.map((m) => toWorkItemTestDto(workItemId, m))
+    const cb = async (t: WorkItemUpdate) => {
+      await this.workItemService.updateWorkItem({}, t, workItemId)
+    }
 
-    try {
-      const testCases = toWorkItemUpdates(testMethods)
-      await this.workItemService.updateWorkItem({}, testCases, workItemId)
+    const errHandler = (O_o: unknown): string | undefined => {
+      if (O_o instanceof Error) {
+        if (DefaultWorkItemAssociationService.noopErrorMessage.test(O_o.message)) {
+          azTask.debug('Error for work item ID ' + workItemId + ': ' + O_o.message)
 
-      return workItemTestAssociationDtos
-    } catch (O_o) {
-      if (DefaultWorkItemAssociationService.noopErrorMessage.test(O_o.message)) {
-        azTask.debug('Error for work item ID ' + workItemId + ': ' + O_o.message)
-
-        return workItemTestAssociationDtos
+          return undefined
+        }
       }
 
-      throw O_o
+      if (isString(O_o)) {
+        return O_o
+      }
+
+      return `${JSON.stringify(O_o)}`
     }
+
+    const testCases = toWorkItemUpdates(testMethods)
+
+    const errs = await asyncForEach(testCases, cb, errHandler)
+
+    if (errs.length) {
+      const messages = errs.join('|')
+      const errMessage = `Unknown Error while processing work items: ${messages}`
+
+      azTask.warning(errMessage)
+    }
+
+    return testMethods.map((m) => toWorkItemTestDto(workItemId, m))
   }
 }
