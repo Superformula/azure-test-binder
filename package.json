@@ -10,7 +10,7 @@
     "build-az-task": "npx tfx-cli extension create --manifest-globs vss-extension.json",
     "prebuild:ci": "run-s clean",
     "build:ci": "tsc -p tsconfig.release.json",
-    "postbuild:ci": "cp package.json task/ && cp yarn.lock task/ && cp task.json task/ && cp -r images task/images/ && cd task && yarn install --production --frozen-lockfile",
+    "postbuild:ci": "cp package.json task/ && cp yarn.lock task/ && cp Overview.md task/ && cp task.json task/ && cp -r images task/images/ && cd task && yarn install --production --frozen-lockfile",
     "build:watch": "tsc -w -p tsconfig.release.json",
     "checkcommit": "node ./scripts/commit-lint.js",
     "clean": "run-p clean-generated clean-logs",
