@@ -99,3 +99,53 @@ export const toWorkItemTestDto = (
   testRefId,
   workItemId,
 })
+
+type ErrorHandler<E> = (err: unknown) => E | undefined
+type AsyncForEachResult<R, E> = [R[], E[]]
+type AsyncForEachCallback<T> = (element: T, index?: number, array?: T[]) => Promise<void>
+
+/**
+ * Perform an async operation over the items in a collection.
+ *
+ * @param array - The collection of `T` to operate on
+ * @param callback - The async operation
+ * @param errorHandler - The error
+ */
+export const asyncForEach = async <T, R, E>(
+  array: T[],
+  callback: AsyncForEachCallback<T>,
+  errorHandler: ErrorHandler<E>,
+): Promise<E[]> => {
+  let index = 0
+  const errors: E[] = []
+
+  for (const item of array) {
+    try {
+      await callback(item, index++, array)
+    } catch (O_o: unknown) {
+      const items = errorHandler(O_o)
+
+      if (items) {
+        errors.push(items)
+      }
+    }
+  }
+
+  return errors
+}
+
+/**
+ * Guard function to check if a value is a `string`
+ * @param s - the value to check.
+ */
+export const isString = (s: unknown): s is string => {
+  return typeof s === 'string'
+}
+
+/**
+ * Guard function to check if a value is an {@link Error}
+ * @param e - the value to check.
+ */
+export const isError = (e: unknown): e is Error => {
+  return e instanceof Error
+}
