@@ -4,6 +4,7 @@ import * as azTask from 'azure-pipelines-task-lib/task'
 import { inject, injectable } from 'inversify'
 
 import { Env, TYPES } from '../types/types'
+import { log } from '../utils'
 import {
   TestMethodInfo,
   WorkItemTestAssociationInfo,
@@ -92,13 +93,26 @@ export class DefaultWorkItemAssociationService implements WorkItemAssociationSer
     }
 
     const cb = async (t: WorkItemUpdate) => {
-      await this.workItemService.updateWorkItem({}, t, workItemId)
+      const {
+        value: { url },
+      } = t
+
+      log('CurrentlyProcessing', workItemId, url)
+
+      try {
+        await this.workItemService.updateWorkItem({}, t, workItemId)
+      } catch (e: unknown) {
+        const errorMsg = typeof e === 'string' ? e : e instanceof Error ? e.message : JSON.stringify(e)
+        const message = `Error while processing work item: ${workItemId} for url: ${url}. Error was: ${errorMsg}`
+        log('ErrorProcessing', workItemId, message)
+        throw new Error(message)
+      }
     }
 
     const errHandler = (O_o: unknown): string | undefined => {
       if (O_o instanceof Error) {
         if (DefaultWorkItemAssociationService.noopErrorMessage.test(O_o.message)) {
-          azTask.debug('Error for work item ID ' + workItemId + ': ' + O_o.message)
+          log('ExpectedErrorProcessing', workItemId, O_o.message)
 
           return undefined
         }
@@ -119,7 +133,7 @@ export class DefaultWorkItemAssociationService implements WorkItemAssociationSer
       const messages = errs.join('|')
       const errMessage = `Unknown Error while processing work items: ${messages}`
 
-      azTask.warning(errMessage)
+      log('ErrorProcessing', workItemId, errMessage)
     }
 
     return testMethods.map((m) => toWorkItemTestDto(workItemId, m))

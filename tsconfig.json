@@ -17,6 +17,6 @@
     "declaration": true,
     "paths": {}
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "./augmentations/**/*"],
   "exclude": ["**/node_modules"]
 }

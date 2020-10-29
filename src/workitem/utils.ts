@@ -101,11 +101,11 @@ export const toWorkItemTestDto = (
 })
 
 type ErrorHandler<E> = (err: unknown) => E | undefined
-type AsyncForEachResult<R, E> = [R[], E[]]
 type AsyncForEachCallback<T> = (element: T, index?: number, array?: T[]) => Promise<void>
 
 /**
  * Perform an async operation over the items in a collection.
+ * Catch any errors and capture the messages and return them.
  *
  * @param array - The collection of `T` to operate on
  * @param callback - The async operation

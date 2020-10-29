@@ -1,8 +1,8 @@
 import * as azTask from 'azure-pipelines-task-lib/task'
 
-import { EnvOptions } from './config'
 import { getContainer } from './inversify.config'
 import { TYPES } from './types/types'
+import { EnvOptions } from './utils'
 import { WorkItemUpdateResults } from './workitem/types'
 import { WorkItemAssociationService } from './workitem/WorkItemAssociationService'
 
@@ -16,6 +16,8 @@ export async function main(buildId: number, envOptions?: EnvOptions): Promise<Wo
 
     return result
   } catch (O_o) {
+    azTask.error(O_o.message)
+
     throw O_o
   }
 }

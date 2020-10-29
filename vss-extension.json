@@ -2,7 +2,7 @@
   "manifestVersion": 1,
   "id": "azure-test-binder",
   "name": "Azure Test Binder",
-  "version": "0.2.4",
+  "version": "0.2.6",
   "publisher": "Superformula",
   "targets": [
     {
@@ -19,6 +19,14 @@
       "path": "task"
     }
   ],
+  "content": {
+    "details": {
+      "path": "overview.md"
+    },
+    "license": {
+      "path": "LICENSE"
+    }
+  },
   "contributions": [
     {
       "id": "azure-test-binder-task",
@@ -28,5 +36,17 @@
         "name": "task"
       }
     }
-  ]
+  ],
+  "links": {
+    "repository": {
+      "uri": "https://github.com/Superformula/azure-test-binder"
+    },
+    "issues": {
+      "uri": "https://github.com/Superformula/azure-test-binder/issues"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "uri": "https://github.com/Superformula/azure-test-binder"
+  }
 }
