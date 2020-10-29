@@ -2,8 +2,8 @@ import 'reflect-metadata'
 
 import { Container } from 'inversify'
 
-import { EnvOptions, getEnv } from './config'
 import { Env, TYPES } from './types/types'
+import { EnvOptions, getEnv } from './utils'
 import { bindings } from './workitem'
 
 /**
