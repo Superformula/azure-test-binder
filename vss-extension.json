@@ -9,11 +9,12 @@
       "id": "Microsoft.VisualStudio.Services"
     }
   ],
-  "description": "Associate test ids to work items",
+  "description": "Associate JS/TS tests to work item ids in the test name.",
   "categories": ["Azure Pipelines"],
   "icons": {
     "default": "images/extension-icon.png"
   },
+  "galleryFlags": ["Preview", "Public"],
   "files": [
     {
       "path": "task"

@@ -1,5 +1,4 @@
 {
-  "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
   "id": "7e5c76b8-13bb-4637-8d23-877f702aaebc",
   "name": "azure-test-binder",
   "friendlyName": "Azure Test Binder",
@@ -28,12 +27,5 @@
     "Node10": {
       "target": "index.js"
     }
-  },
-  "messages": {
-    "StartingTask": "Associating tests for build number: %s",
-    "TaskComplete": "Successfully processed work items: %s",
-    "CurrentlyProcessing": "Associating work item %s to test url: %s",
-    "ErrorProcessing": "Error processing work item: %s. Error message: %s",
-    "ExpectedErrorProcessing": "Already associated work item: %s"
   }
 }

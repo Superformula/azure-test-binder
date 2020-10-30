@@ -122,8 +122,8 @@ export const asyncForEach = async <T, R, E>(
   for (const item of array) {
     try {
       await callback(item, index++, array)
-    } catch (O_o: unknown) {
-      const items = errorHandler(O_o)
+    } catch (e: unknown) {
+      const items = errorHandler(e)
 
       if (items) {
         errors.push(items)

@@ -1,6 +1,3 @@
-import * as azTask from 'azure-pipelines-task-lib/task'
-
-import { Messages } from './constants'
 import { Env } from './types/types'
 
 /**
@@ -30,8 +27,4 @@ export const getEnv = ({ orgUrl, pat, projectName }: EnvOptions = {}): Env => {
     ORG_URL: orgUrl ?? process.env.ORG_URL ?? 'http://localhost',
     PROJECT: projectName ?? process.env.PROJECT,
   }
-}
-
-export const log = (messageKey: Messages, ...values: unknown[]): void => {
-  azTask.loc(messageKey, values)
 }

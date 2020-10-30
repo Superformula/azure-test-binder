@@ -2,7 +2,7 @@ import * as path from 'path'
 
 import * as azTask from 'azure-pipelines-task-lib/task'
 
-import { EnvOptions, log } from './utils'
+import { EnvOptions } from './utils'
 
 import { main } from './index'
 
@@ -22,14 +22,14 @@ export async function run(): Promise<void> {
     const buildIdStr = azTask.getVariable(`Build.BuildId`)
     const buildId = Number(buildIdStr)
     const envOptions = { ...getEnvOptionDefaults() }
-    log('StartingTask', buildIdStr)
+    console.log(`Associating tests for build number: ${buildId}`)
     const { unknownWorkItem, success } = await main(buildId, envOptions)
     azTask.debug(`${unknownWorkItem.length} - tests with missing work items`)
     const processedWorkItems = success.map((w) => w.workItemId).join('|')
-    log('TaskComplete', processedWorkItems)
+    console.log(`Successfully processed work items: ${processedWorkItems}`)
     azTask.setResult(azTask.TaskResult.Succeeded, `Successfully processed work items: ${processedWorkItems}`)
-  } catch (O_o) {
-    azTask.setResult(azTask.TaskResult.Failed, O_o.message)
+  } catch (e) {
+    azTask.setResult(azTask.TaskResult.Failed, e.message)
   }
 }
 

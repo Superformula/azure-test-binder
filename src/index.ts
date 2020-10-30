@@ -15,9 +15,9 @@ export async function main(buildId: number, envOptions?: EnvOptions): Promise<Wo
     const result = await workItemAssociationService.linkTestMethods(buildId)
 
     return result
-  } catch (O_o) {
-    azTask.error(O_o.message)
+  } catch (e) {
+    azTask.error(e.message)
 
-    throw O_o
+    throw e
   }
 }

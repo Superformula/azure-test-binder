@@ -4,7 +4,6 @@ import * as azTask from 'azure-pipelines-task-lib/task'
 import { inject, injectable } from 'inversify'
 
 import { Env, TYPES } from '../types/types'
-import { log } from '../utils'
 import {
   TestMethodInfo,
   WorkItemTestAssociationInfo,
@@ -89,7 +88,7 @@ export class DefaultWorkItemAssociationService implements WorkItemAssociationSer
     azTask.debug('Associating ' + testMethods.length + ' test methods(s) with work item ID ' + workItemId)
 
     if (!testMethods.length) {
-      throw new Error(`O_o No test methods for work item: ${workItemId}!`)
+      throw new Error(`e No test methods for work item: ${workItemId}!`)
     }
 
     const cb = async (t: WorkItemUpdate) => {
@@ -97,32 +96,39 @@ export class DefaultWorkItemAssociationService implements WorkItemAssociationSer
         value: { url },
       } = t
 
-      log('CurrentlyProcessing', workItemId, url)
+      console.log(`Associating work item ${workItemId} to test url: ${url}`)
 
       try {
-        await this.workItemService.updateWorkItem({}, t, workItemId)
+        const headers = { 'Content-Type': 'application/json-patch+json' }
+        await this.workItemService.updateWorkItem(headers, t, workItemId)
       } catch (e: unknown) {
         const errorMsg = typeof e === 'string' ? e : e instanceof Error ? e.message : JSON.stringify(e)
         const message = `Error while processing work item: ${workItemId} for url: ${url}. Error was: ${errorMsg}`
-        log('ErrorProcessing', workItemId, message)
+        console.log(`Error processing work item: ${workItemId}. Error message: ${message}`)
         throw new Error(message)
       }
     }
 
-    const errHandler = (O_o: unknown): string | undefined => {
-      if (O_o instanceof Error) {
-        if (DefaultWorkItemAssociationService.noopErrorMessage.test(O_o.message)) {
-          log('ExpectedErrorProcessing', workItemId, O_o.message)
+    const errHandler = (e: unknown): string | undefined => {
+      console.log('Error', e)
+
+      if (e instanceof Error) {
+        if (DefaultWorkItemAssociationService.noopErrorMessage.test(e.message)) {
+          console.log(`Already associated work item: ${workItemId}`)
 
           return undefined
         }
+
+        return e.message
       }
 
-      if (isString(O_o)) {
-        return O_o
+      if (isString(e)) {
+        return e
       }
 
-      return `${JSON.stringify(O_o)}`
+      const errorString = JSON.stringify(e)
+
+      return errorString
     }
 
     const testCases = toWorkItemUpdates(testMethods)
@@ -133,7 +139,7 @@ export class DefaultWorkItemAssociationService implements WorkItemAssociationSer
       const messages = errs.join('|')
       const errMessage = `Unknown Error while processing work items: ${messages}`
 
-      log('ErrorProcessing', workItemId, errMessage)
+      console.log(`Error processing work item: ${workItemId} Error message: ${errMessage}`)
     }
 
     return testMethods.map((m) => toWorkItemTestDto(workItemId, m))
