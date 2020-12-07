@@ -1,6 +1,6 @@
 {
   "name": "azure-test-binder",
-  "version": "0.2.4",
+  "version": "0.2.9",
   "description": "Associate Azure Devops Work Items To Automated tests",
   "license": "MIT",
   "author": "James Dunnam",
@@ -20,7 +20,7 @@
     "commit": "git-cz",
     "format": "./scripts/format.sh && yarn run sort-pj",
     "lint": "scripts/check-format.sh",
-    "manual-run": "NODE_ENV=local run-func task/index.js main",
+    "manual-run": "NODE_ENV=local run-func task/index.js main 56489",
     "nuke": "run-s clean clean-deps",
     "sort-pj": "npx sort-package-json",
     "test": "jest",

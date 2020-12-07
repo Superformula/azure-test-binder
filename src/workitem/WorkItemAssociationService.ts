@@ -91,8 +91,8 @@ export class DefaultWorkItemAssociationService implements WorkItemAssociationSer
       throw new Error(`O_o No test methods for work item: ${workItemId}!`)
     }
 
-    const cb = async (t: WorkItemUpdate) => {
-      await this.workItemService.updateWorkItem({}, t, workItemId)
+    const cb = async (t: WorkItemUpdate[]) => {
+       await this.workItemService.updateWorkItem({}, t, workItemId)
     }
 
     const errHandler = (O_o: unknown): string | undefined => {

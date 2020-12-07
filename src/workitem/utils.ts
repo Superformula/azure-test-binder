@@ -50,23 +50,29 @@ export const partition = (testResults: TestMethodInfo[]): WorkItemTestAssociatio
  *
  * @param testRefId - `number` test reference id
  */
-export const toWorkItemUpdate = (testRefId: number): WorkItemUpdate => ({
-  op: 'add',
-  path: '/relations/-',
-  value: {
-    rel: 'ArtifactLink',
-    url: `vstfs:///TestManagement/TcmTest/tcm.${testRefId}`,
-    attributes: {
-      name: 'Test',
+export const toWorkItemUpdate = (testRefId: number): WorkItemUpdate[] => {
+  console.log(`Associating: ${testRefId}`)
+
+  return [
+    {
+      op: 'add',
+      path: '/relations/-',
+      value: {
+        rel: 'ArtifactLink',
+        url: `vstfs:///TestManagement/TcmTest/tcm.${testRefId}`,
+        attributes: {
+          name: 'Test',
+        },
+      },
     },
-  },
-})
+  ]
+}
 
 /**
  * Transform an array of {@link ShallowTestCaseResult} to an array of {@link WorkItemUpdate}
  * @param testCaseResults - the {@link ShallowTestCaseResult} array to transform
  */
-export const toWorkItemUpdates = (testCaseResults: ShallowTestCaseResult[]): WorkItemUpdate[] =>
+export const toWorkItemUpdates = (testCaseResults: ShallowTestCaseResult[]): WorkItemUpdate[][] =>
   testCaseResults.map((test) => toWorkItemUpdate(test.refId))
 
 /**
@@ -111,7 +117,7 @@ type AsyncForEachCallback<T> = (element: T, index?: number, array?: T[]) => Prom
  * @param callback - The async operation
  * @param errorHandler - The error
  */
-export const asyncForEach = async <T, R, E>(
+export const asyncForEach = async <T, E>(
   array: T[],
   callback: AsyncForEachCallback<T>,
   errorHandler: ErrorHandler<E>,
