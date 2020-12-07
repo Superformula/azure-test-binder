@@ -9,16 +9,25 @@
       "id": "Microsoft.VisualStudio.Services"
     }
   ],
-  "description": "Associate test ids to work items",
+  "description": "Associate JS/TS tests to work item ids in the test name.",
   "categories": ["Azure Pipelines"],
   "icons": {
     "default": "images/extension-icon.png"
   },
+  "galleryFlags": ["Preview", "Public"],
   "files": [
     {
       "path": "task"
     }
   ],
+  "content": {
+    "details": {
+      "path": "overview.md"
+    },
+    "license": {
+      "path": "LICENSE"
+    }
+  },
   "contributions": [
     {
       "id": "azure-test-binder-task",
@@ -28,5 +37,17 @@
         "name": "task"
       }
     }
-  ]
+  ],
+  "links": {
+    "repository": {
+      "uri": "https://github.com/Superformula/azure-test-binder"
+    },
+    "issues": {
+      "uri": "https://github.com/Superformula/azure-test-binder/issues"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "uri": "https://github.com/Superformula/azure-test-binder"
+  }
 }

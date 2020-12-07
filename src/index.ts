@@ -1,8 +1,8 @@
 import * as azTask from 'azure-pipelines-task-lib/task'
 
-import { EnvOptions } from './config'
 import { getContainer } from './inversify.config'
 import { TYPES } from './types/types'
+import { EnvOptions } from './utils'
 import { WorkItemUpdateResults } from './workitem/types'
 import { WorkItemAssociationService } from './workitem/WorkItemAssociationService'
 
@@ -15,7 +15,9 @@ export async function main(buildId: number, envOptions?: EnvOptions): Promise<Wo
     const result = await workItemAssociationService.linkTestMethods(buildId)
 
     return result
-  } catch (O_o) {
-    throw O_o
+  } catch (e) {
+    azTask.error(e.message)
+
+    throw e
   }
 }

@@ -92,23 +92,39 @@ export class DefaultWorkItemAssociationService implements WorkItemAssociationSer
     }
 
     const cb = async (t: WorkItemUpdate[]) => {
-       await this.workItemService.updateWorkItem({}, t, workItemId)
+      console.log(`Associating work item ${workItemId}`)
+
+      try {
+        const headers = { 'Content-Type': 'application/json-patch+json' }
+        await this.workItemService.updateWorkItem(headers, t, workItemId)
+      } catch (e: unknown) {
+        const errorMsg = typeof e === 'string' ? e : e instanceof Error ? e.message : JSON.stringify(e)
+        const message = `Error while processing work item: ${workItemId}. Error was: ${errorMsg}`
+        console.log(`Error processing work item: ${workItemId}. Error message: ${message}`)
+        throw new Error(message)
+      }
     }
 
-    const errHandler = (O_o: unknown): string | undefined => {
-      if (O_o instanceof Error) {
-        if (DefaultWorkItemAssociationService.noopErrorMessage.test(O_o.message)) {
-          azTask.debug('Error for work item ID ' + workItemId + ': ' + O_o.message)
+    const errHandler = (e: unknown): string | undefined => {
+      console.log('Error', e)
+
+      if (e instanceof Error) {
+        if (DefaultWorkItemAssociationService.noopErrorMessage.test(e.message)) {
+          console.log(`Already associated work item: ${workItemId}`)
 
           return undefined
         }
+
+        return e.message
       }
 
-      if (isString(O_o)) {
-        return O_o
+      if (isString(e)) {
+        return e
       }
 
-      return `${JSON.stringify(O_o)}`
+      const errorString = JSON.stringify(e)
+
+      return errorString
     }
 
     const testCases = toWorkItemUpdates(testMethods)
@@ -119,7 +135,7 @@ export class DefaultWorkItemAssociationService implements WorkItemAssociationSer
       const messages = errs.join('|')
       const errMessage = `Unknown Error while processing work items: ${messages}`
 
-      azTask.warning(errMessage)
+      console.log(`Error processing work item: ${workItemId} Error message: ${errMessage}`)
     }
 
     return testMethods.map((m) => toWorkItemTestDto(workItemId, m))
