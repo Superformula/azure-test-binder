@@ -66,10 +66,10 @@ export const toWorkItemUpdate = (testRefId: number): WorkItemUpdate => {
       },
     },
     {
-      op: "add",
-      path: "/fields/System.State",
-      value: "Closed"
-    }
+      op: 'add',
+      path: '/fields/System.State',
+      value: 'Closed',
+    },
   ]
 }
 

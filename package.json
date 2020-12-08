@@ -1,6 +1,6 @@
 {
   "name": "azure-test-binder",
-  "version": "0.2.9",
+  "version": "0.2.10",
   "description": "Associate Azure Devops Work Items To Automated tests",
   "license": "MIT",
   "author": "James Dunnam",
