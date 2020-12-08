@@ -44,7 +44,7 @@ describe('extractWorkItemId tests', function () {
       ${-1000}
     `('should create WorkItemUpdate objects for: $testRefId', function ({ testRefId }) {
       const expectedUrl = `vstfs:///TestManagement/TcmTest/tcm.${testRefId}`
-      const [workItemUpdate] = toWorkItemUpdate(testRefId)
+      const workItemUpdate = toWorkItemUpdate(testRefId)
       expect(workItemUpdate).toBeDefined()
       expect(workItemUpdate[0].value.url).toStrictEqual(expectedUrl)
     })
@@ -60,7 +60,6 @@ describe('extractWorkItemId tests', function () {
       const testRef = shallowTestCaseResultFactory.build()
       const expectedUrl = `vstfs:///TestManagement/TcmTest/tcm.${testRef.refId}`
       const [workItemUpdates] = toWorkItemUpdates([testRef])
-      expect(workItemUpdates.length).toStrictEqual(1)
       expect(workItemUpdates[0].value.url).toStrictEqual(expectedUrl)
     })
   })
