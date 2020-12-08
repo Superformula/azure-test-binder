@@ -16,7 +16,7 @@ export async function main(buildId: number, envOptions?: EnvOptions): Promise<Wo
 
     return result
   } catch (e) {
-    azTask.error(e.message)
+    console.log(e.message)
 
     throw e
   }

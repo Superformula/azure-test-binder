@@ -39,13 +39,20 @@ export type WorkItemUpdateResults = {
 export type WorkItemAssociationStatus = keyof WorkItemUpdateResults
 
 /**
- * Operation, path, and UpdateValue for updating a work item.
+ * Tuple of Operation, path, and UpdateValue | UpdateStateValue for updating a work item.
  */
-export type WorkItemUpdate = {
-  op: Operation
-  path: string
-  value: UpdateValue
-}
+export type WorkItemUpdate = [
+  {
+    op: Operation
+    path: string
+    value: UpdateValue
+  },
+  {
+    op: Operation
+    path: string
+    value: UpdateStateValue
+  },
+]
 
 /**
  * The value for the {@link WorkItemUpdate}
@@ -57,6 +64,16 @@ export type UpdateValue = {
     name: string
   }
 }
+
+/**
+ * States for a test work item
+ */
+export const stateValues = ['Closed'] as const
+
+/**
+ * States type for a workitem
+ */
+export type UpdateStateValue = typeof stateValues[number]
 
 /**
  * All Operation values

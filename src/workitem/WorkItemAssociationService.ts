@@ -1,6 +1,5 @@
 import { ITestApi } from 'azure-devops-node-api/TestApi'
 import { IWorkItemTrackingApi } from 'azure-devops-node-api/WorkItemTrackingApi'
-import * as azTask from 'azure-pipelines-task-lib/task'
 import { inject, injectable } from 'inversify'
 
 import { Env, TYPES } from '../types/types'
@@ -19,7 +18,7 @@ export interface WorkItemAssociationService {
 
 @injectable()
 export class DefaultWorkItemAssociationService implements WorkItemAssociationService {
-  private static noopErrorMessage = /Relation already exists/gi
+  private readonly headers = { 'Content-Type': 'application/json-patch+json' }
 
   constructor(
     @inject(TYPES.AzureWorkItemService) private readonly workItemService: IWorkItemTrackingApi,
@@ -35,7 +34,7 @@ export class DefaultWorkItemAssociationService implements WorkItemAssociationSer
     const association = await this.getWorkItemTestAssociation(buildId)
     const result = await this.associateWorkItemsToTests(association)
 
-    return Promise.resolve(result)
+    return result
   }
 
   /**
@@ -85,31 +84,22 @@ export class DefaultWorkItemAssociationService implements WorkItemAssociationSer
    * @param testMethods - `TestMethodInfo[]` The test methods to associate with the work item.
    */
   private async handleValidWorkItem(workItemId: number, testMethods: TestMethodInfo[]): Promise<WorkItemTestDto[]> {
-    azTask.debug('Associating ' + testMethods.length + ' test methods(s) with work item ID ' + workItemId)
+    console.log(`Associating ${testMethods.length} test methods(s) with work item ID ${workItemId}`)
 
     if (!testMethods.length) {
       throw new Error(`O_o No test methods for work item: ${workItemId}!`)
     }
 
-    const cb = async (t: WorkItemUpdate[]) => {
+    const cb = async (t: WorkItemUpdate) => {
       console.log(`Associating work item ${workItemId}`)
-
-      try {
-        const headers = { 'Content-Type': 'application/json-patch+json' }
-        await this.workItemService.updateWorkItem(headers, t, workItemId)
-      } catch (e: unknown) {
-        const errorMsg = typeof e === 'string' ? e : e instanceof Error ? e.message : JSON.stringify(e)
-        const message = `Error while processing work item: ${workItemId}. Error was: ${errorMsg}`
-        console.log(`Error processing work item: ${workItemId}. Error message: ${message}`)
-        throw new Error(message)
-      }
+      await this.workItemService.updateWorkItem(this.headers, t, workItemId)
     }
 
     const errHandler = (e: unknown): string | undefined => {
       console.log('Error', e)
 
       if (e instanceof Error) {
-        if (DefaultWorkItemAssociationService.noopErrorMessage.test(e.message)) {
+        if (e.message.toLowerCase().includes('relation already exists')) {
           console.log(`Already associated work item: ${workItemId}`)
 
           return undefined

@@ -24,7 +24,7 @@ export async function run(): Promise<void> {
     const envOptions = { ...getEnvOptionDefaults() }
     console.log(`Associating tests for build number: ${buildId}`)
     const { unknownWorkItem, success } = await main(buildId, envOptions)
-    azTask.debug(`${unknownWorkItem.length} - tests with missing work items`)
+    console.log(`${unknownWorkItem.length} - tests with missing work items`)
     const processedWorkItems = success.map((w) => w.workItemId).join('|')
     console.log(`Successfully processed work items: ${processedWorkItems}`)
     azTask.setResult(azTask.TaskResult.Succeeded, `Successfully processed work items: ${processedWorkItems}`)

@@ -50,7 +50,7 @@ export const partition = (testResults: TestMethodInfo[]): WorkItemTestAssociatio
  *
  * @param testRefId - `number` test reference id
  */
-export const toWorkItemUpdate = (testRefId: number): WorkItemUpdate[] => {
+export const toWorkItemUpdate = (testRefId: number): WorkItemUpdate => {
   console.log(`Associating: ${testRefId}`)
 
   return [
@@ -65,6 +65,11 @@ export const toWorkItemUpdate = (testRefId: number): WorkItemUpdate[] => {
         },
       },
     },
+    {
+      op: "add",
+      path: "/fields/System.State",
+      value: "Closed"
+    }
   ]
 }
 
@@ -72,7 +77,7 @@ export const toWorkItemUpdate = (testRefId: number): WorkItemUpdate[] => {
  * Transform an array of {@link ShallowTestCaseResult} to an array of {@link WorkItemUpdate}
  * @param testCaseResults - the {@link ShallowTestCaseResult} array to transform
  */
-export const toWorkItemUpdates = (testCaseResults: ShallowTestCaseResult[]): WorkItemUpdate[][] =>
+export const toWorkItemUpdates = (testCaseResults: ShallowTestCaseResult[]): WorkItemUpdate[] =>
   testCaseResults.map((test) => toWorkItemUpdate(test.refId))
 
 /**
