@@ -3,7 +3,7 @@ import { ShallowTestCaseResult } from 'azure-devops-node-api/interfaces/TestInte
 import { Optional } from '../types/types'
 import { TestMethodInfo, WorkItemTestAssociationInfo, WorkItemTestDto, WorkItemUpdate } from './types'
 
-const defaultWorkItemIdPattern = /(#?\d{1,})/g
+const defaultWorkItemIdPattern = /#(\d+)|(\d{5})/g
 
 /**
  * Extract a work item id from a text string.
