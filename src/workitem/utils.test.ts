@@ -2,25 +2,25 @@ import { shallowTestCaseResultFactory, testMethodInfoFactory } from '../../test/
 import { extractWorkItemId, toTestMethodInfo, toWorkItemTestDto, toWorkItemUpdate, toWorkItemUpdates } from './utils'
 
 describe('extractWorkItemId tests', function () {
-  const baseResult = '12345';
+  const baseResult = '12345'
 
   describe.each`
-    text | result
-    ${'#1'} | ${'1'}
-    ${'#12'} | ${'12'}
-    ${'#123'} | ${'123'}
-    ${'#1234'} | ${'1234'}
-    ${'12345'} | ${baseResult}
-    ${'#12345'}  | ${baseResult}
-    ${'#12345678910'} | ${'12345678910'}
-    ${'test.test.#12345 tests / should assert true 1'}  | ${baseResult}
-    ${'test.test.A test / Single test for TESTABLE REQUIREMENT #12345'}  | ${baseResult}
-    ${'test.test.A test / Testable Requirement #12345 - Test Acceptance Criteria'}  | ${baseResult}
-    ${'test.test.Requirement #12345 / should assert true 2'}  | ${baseResult}
-    ${'test.test.12345 tests / should assert true 1'}  | ${baseResult}
-    ${'test.test.A test / Single test for TESTABLE REQUIREMENT 12345'}  | ${baseResult}
+    text                                                                           | result
+    ${'#1'}                                                                        | ${'1'}
+    ${'#12'}                                                                       | ${'12'}
+    ${'#123'}                                                                      | ${'123'}
+    ${'#1234'}                                                                     | ${'1234'}
+    ${'12345'}                                                                     | ${baseResult}
+    ${'#12345'}                                                                    | ${baseResult}
+    ${'#12345678910'}                                                              | ${'12345678910'}
+    ${'test.test.#12345 tests / should assert true 1'}                             | ${baseResult}
+    ${'test.test.A test / Single test for TESTABLE REQUIREMENT #12345'}            | ${baseResult}
+    ${'test.test.A test / Testable Requirement #12345 - Test Acceptance Criteria'} | ${baseResult}
+    ${'test.test.Requirement #12345 / should assert true 2'}                       | ${baseResult}
+    ${'test.test.12345 tests / should assert true 1'}                              | ${baseResult}
+    ${'test.test.A test / Single test for TESTABLE REQUIREMENT 12345'}             | ${baseResult}
     ${'test.test.A test / Testable Requirement 12345 - Test Acceptance Criteria'}  | ${baseResult}
-    ${'test.test.Requirement -12345 / should assert true 2'}  | ${baseResult}
+    ${'test.test.Requirement -12345 / should assert true 2'}                       | ${baseResult}
   `('extract work item id from: $text', ({ text, result }) => {
     it('should return a work item', () => {
       const id = extractWorkItemId(text)
