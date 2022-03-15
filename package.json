@@ -1,12 +1,13 @@
 {
   "name": "azure-test-binder",
-  "version": "0.3.0",
+  "version": "0.3.2",
   "description": "Associate Azure Devops Work Items To Automated tests",
   "license": "MIT",
   "author": "James Dunnam",
   "scripts": {
     "prebuild": "yarn clean-generated",
     "build": "tsc -p tsconfig.release.json",
+    "prebuild-az-task": "yarn build:ci",
     "build-az-task": "npx tfx-cli extension create --manifest-globs vss-extension.json",
     "prebuild:ci": "run-s clean",
     "build:ci": "tsc -p tsconfig.release.json",
